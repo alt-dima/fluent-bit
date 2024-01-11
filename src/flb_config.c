@@ -2,7 +2,7 @@
 
 /*  Fluent Bit
  *  ==========
- *  Copyright (C) 2015-2022 The Fluent Bit Authors
+ *  Copyright (C) 2015-2024 The Fluent Bit Authors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -281,6 +281,8 @@ struct flb_config *flb_config_init()
     /* reload */
     config->ensure_thread_safety_on_hot_reloading = FLB_TRUE;
     config->hot_reloaded_count = 0;
+    config->shutdown_by_hot_reloading = FLB_FALSE;
+    config->hot_reloading = FLB_FALSE;
 
 #ifdef FLB_HAVE_SQLDB
     mk_list_init(&config->sqldb_list);

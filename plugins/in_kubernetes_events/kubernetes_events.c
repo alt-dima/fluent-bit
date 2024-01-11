@@ -2,7 +2,7 @@
 
 /*  Fluent Bit
  *  ==========
- *  Copyright (C) 2015-2023 The Fluent Bit Authors
+ *  Copyright (C) 2015-2024 The Fluent Bit Authors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -888,6 +888,11 @@ static struct flb_config_map config_map[] = {
       FLB_CONFIG_MAP_STR, "kube_namespace", NULL,
       0, FLB_TRUE, offsetof(struct k8s_events, namespace),
       "kubernetes namespace to get events from, gets event from all namespaces by default."
+    },
+    {
+       FLB_CONFIG_MAP_STR, "timestamp_key", K8S_EVENTS_RA_TIMESTAMP,
+       0, FLB_TRUE, offsetof(struct k8s_events, timestamp_key),
+       "Record accessor for the timestamp from the event. Default is $lastTimestamp."
     },
 
 #ifdef FLB_HAVE_SQLDB

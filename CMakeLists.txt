@@ -8,7 +8,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 # Fluent Bit Version
 set(FLB_VERSION_MAJOR  2)
 set(FLB_VERSION_MINOR  2)
-set(FLB_VERSION_PATCH  0)
+set(FLB_VERSION_PATCH  2)
 set(FLB_VERSION_STR "${FLB_VERSION_MAJOR}.${FLB_VERSION_MINOR}.${FLB_VERSION_PATCH}")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -209,6 +209,7 @@ option(FLB_IN_OPENTELEMETRY            "Enable OpenTelemetry input plugin"      
 option(FLB_IN_ELASTICSEARCH            "Enable Elasticsearch (Bulk API) input plugin" Yes)
 option(FLB_IN_CALYPTIA_FLEET           "Enable Calyptia Fleet input plugin"           Yes)
 option(FLB_IN_SPLUNK                   "Enable Splunk HTTP HEC input plugin"          Yes)
+option(FLB_IN_PROCESS_EXPORTER_METRICS "Enable process exporter metrics input plugin" Yes)
 option(FLB_OUT_AZURE                   "Enable Azure output plugin"                   Yes)
 option(FLB_OUT_AZURE_BLOB              "Enable Azure output plugin"                   Yes)
 option(FLB_OUT_AZURE_LOGS_INGESTION    "Enable Azure Logs Ingestion output plugin"    Yes)
@@ -265,6 +266,7 @@ option(FLB_FILTER_EXPECT               "Enable expect filter"                   
 option(FLB_FILTER_GREP                 "Enable grep filter"                           Yes)
 option(FLB_FILTER_MODIFY               "Enable modify filter"                         Yes)
 option(FLB_FILTER_STDOUT               "Enable stdout filter"                         Yes)
+option(FLB_FILTER_SYSINFO              "Enable sysinfo filter"                        Yes)
 option(FLB_FILTER_PARSER               "Enable parser filter"                         Yes)
 option(FLB_FILTER_KUBERNETES           "Enable kubernetes filter"                     Yes)
 option(FLB_FILTER_REWRITE_TAG          "Enable tag rewrite filter"                    Yes)
@@ -393,6 +395,11 @@ if (FLB_SYSTEM_MACOS)
   # build tweaks
   include(cmake/macos-setup.cmake)
 endif()
+
+# Build for SystemZ - s390x arch
+if (FLB_SYSTEM_LINUX)
+  include(cmake/s390x.cmake)
+endif ()
 
 # Extract Git commit information for debug output.
 # Note that this is only set when cmake is run, the intent here is to use in CI for verification of releases so is acceptable.
@@ -613,6 +620,12 @@ if(FLB_TLS)
   find_package(OpenSSL)
   if(OPENSSL_FOUND)
     FLB_DEFINITION(FLB_HAVE_OPENSSL)
+  endif()
+
+  if (FLB_SYSTEM_WINDOWS AND NOT(OPENSSL_FOUND))
+    # win32 builds w/o openssl will fail later so we might as well catch it
+    # early instead.
+    MESSAGE(FATAL_ERROR "OpenSSL required on Windows, see DEVELOPER_GUIDE.md")
   endif()
 endif()
 
