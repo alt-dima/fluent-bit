@@ -603,6 +603,7 @@ int flb_sched_destroy(struct flb_sched *sched)
     /* Delete timers */
     mk_list_foreach_safe(head, tmp, &sched->timers) {
         timer = mk_list_entry(head, struct flb_sched_timer, _head);
+        mk_event_timeout_destroy(sched->evl, &timer->event);
         flb_sched_timer_destroy(timer);
         c++;
     }
