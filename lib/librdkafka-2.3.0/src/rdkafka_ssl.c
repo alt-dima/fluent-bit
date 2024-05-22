@@ -40,8 +40,8 @@
 #ifdef _WIN32
 #include <wincrypt.h>
 #pragma comment(lib, "crypt32.lib")
-#pragma comment(lib, "libcrypto.lib")
-#pragma comment(lib, "libssl.lib")
+#pragma comment(lib, "libcrypto_static.lib")
+#pragma comment(lib, "libssl_static.lib")
 #endif
 
 #include <openssl/x509.h>
